@@ -1,0 +1,49 @@
+---
+parameters:
+  targets:
+    type: TargetSpec
+
+steps:
+  - plan: linuxserver::basic_setup
+    parameters:
+      targets: $targets
+    description: "Basic setup"
+  - source: linuxserver/local_mitm.pem
+    destination: /etc/ssl/private/local_mitm.pem
+    target: $targets
+    description: "Upload Squid SSL key"
+  - source: linuxserver/local_mitm.crt
+    destination: /etc/ssl/certs/local_mitm.crt
+    target: $targets
+    description: "Upload Squid SSL certificate"
+  - resources:
+    - type: file
+      title: /srv
+      parameters:
+        ensure: directory
+    - type: file
+      title: /srv/squid
+      parameters:
+        ensure: directory
+    - type: file
+      title: /srv/squid/cache
+      parameters:
+        ensure: directory
+    - type: class
+      title: docker
+      parameters:
+        ensure: latest
+        docker_ce_release: stretch
+    - type: docker::run
+      title: meatlover-de/squid4
+      parameters:
+        ensure: present
+        image: meatlover-de/squid4
+        extra_parameters: ['--restart=always']
+        docker_service: true
+        ports: ['0.0.0.0:3128:3128/tcp', '0.0.0.0:3129:3129/tcp']
+#        expose: [3128]
+        env: ['MITM_CERT=/local-mitm.crt', 'MITM_KEY=/local-mitm.pem', 'MITM_PROXY=yes']
+        volumes: ['/srv/squid/cache:/var/cache/squid4','/etc/ssl/certs:/etc/ssl/certs:ro', '/etc/ssl/private/local_mitm.pem:/local-mitm.pem:ro', '/etc/ssl/certs/local_mitm.crt:/local-mitm.crt:ro']
+    target: $targets
+    description: "Install and configure SQUID web proxy docker container"

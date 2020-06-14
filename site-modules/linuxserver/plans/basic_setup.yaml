@@ -1,0 +1,48 @@
+parameters:
+  targets:
+    type: TargetSpec
+
+steps:
+  - resources:
+    - type: package
+      title: aptitude
+      parameters:
+        ensure: latest
+    - type: package
+      title: sudo
+      parameters:
+        ensure: latest
+    - type: package
+      title: net-tools
+      parameters:
+        ensure: latest
+    - type: package
+      title: vim
+      parameters:
+        ensure: latest
+    - type: package
+      title: apt-transport-https
+      parameters:
+        ensure: latest
+    - type: package
+      title: ca-certificates
+      parameters:
+        ensure: latest
+    - type: package
+      title: curl
+      parameters:
+        ensure: latest
+    - type: package
+      title: gnupg-agent
+      parameters:
+        ensure: latest
+    - type: package
+      title: software-properties-common
+      parameters:
+        ensure: latest
+    - type: package
+      title: wget
+      parameters:
+        ensure: latest
+    target: $targets
+    description: "Install basic packages needed"

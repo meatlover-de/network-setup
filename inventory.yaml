@@ -1,0 +1,22 @@
+---
+groups:
+  - name: debian
+    targets:
+      - name: macmini
+        uri: 192.168.1.5
+    config:
+      transport: ssh
+      ssh:
+        user: root
+  - name: raspian
+    targets:
+      - name: raspi3
+        uri: 192.168.1.142
+      - name: openhab2
+        uri: 192.168.1.144
+    config:
+      transport: ssh
+      ssh:
+        user: pi
+        run_as: root
+        sudo_executable: sudo
